@@ -1,8 +1,6 @@
 #include <iostream>
-#include <functional>
 
 using namespace std;
-using namespace std::placeholders;
 
 /*
  * bind(), binder 구현
@@ -14,7 +12,6 @@ class Widget
 {
 public:
     int print(int i)         { cout << i << endl; return i; }
-    int print2(int i, int j) { cout << i << " " << j << endl; return i + j; }
 };
 
 namespace mystd

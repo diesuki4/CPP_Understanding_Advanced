@@ -19,6 +19,8 @@ public:
 
 int main(int argc, char* argv[])
 {
+    // 비멤버 함수, static 클래스 함수는
+    // 주소 연산자를 생략해도 포인터로 암시적 형 변환된다.
     int (*fp)(int) = print;
 
     fp(5);
@@ -28,9 +30,10 @@ int main(int argc, char* argv[])
     WIDGET_PRINT mfp = &Widget::print;
 
     w.print(5);
-    // 멤버 함수 접근 연산자
+    // 멤버 함수 접근 연산자 .* 과 ->*
     (w.*mfp)(5);
 
+    // 멤버 함수는 주소 연산자를 생략할 수 없다.
     bind(&Widget::print, w, 5)();
 
     // 1번째 인자 5 를 가져온다.
