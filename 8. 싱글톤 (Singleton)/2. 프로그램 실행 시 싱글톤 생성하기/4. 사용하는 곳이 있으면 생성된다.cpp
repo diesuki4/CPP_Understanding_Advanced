@@ -3,7 +3,7 @@
 using namespace std;
 
 /*
- * 싱글톤 5
+ * 사용하는 곳이 있으면 생성된다
  */
 
 template <typename T>
@@ -22,10 +22,6 @@ public:
         Singleton()
         {
             cout << __FUNCTION__ << endl;
-            /* main 이전에 ms_Singleton 이 초기화될 때, 강제로 Get() 을 호출해주면
-             * 
-             * static Derived instance 도 그때 초기화되도록 할 수 있다.*/
-            Get();
         }
 
         static T& Get()
@@ -34,6 +30,11 @@ public:
 
             cout << "static Derived instance 직후" << endl;
             
+            /* 이번에는 ms_Singleton 에 접근하는 코드를 임의로 추가해보면
+             * 
+             * 드디어 ms_Singleton 은 생성되지만,
+             * 
+             * static Derived instance 객체는 main 이후에 생성된다. */
             ms_Singleton;
 
             return instance;
@@ -52,11 +53,13 @@ public:
     void Print() { cout << "Derived::Print() 호출" << endl; }
 };
 
+#define _Derived Derived::GetInstance()
+
 int main(int argc, char* argv[])
 {
     cout << "main 시작" << endl;
 
-    Derived::GetInstance().Print();
+    _Derived.Print();
 
     return 0;
 }

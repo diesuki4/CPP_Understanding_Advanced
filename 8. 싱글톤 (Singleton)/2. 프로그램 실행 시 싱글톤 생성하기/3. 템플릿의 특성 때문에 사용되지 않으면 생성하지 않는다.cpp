@@ -3,10 +3,9 @@
 using namespace std;
 
 /*
- * 싱글톤 2
+ * 템플릿의 특성 때문에 사용되지 않으면 생성하지 않는다
  */
 
-// T 타입의 싱글톤을 반환하도록 하는 중첩 레퍼 클래스
 template <typename T>
 class TWrapper
 {
@@ -17,27 +16,32 @@ public:
 
     class Singleton
     {
+        // 1. 컴파일러가 ms_Singleton 을 초기화해야 하는지 확인하기 위해 생성자를 본다.
         static Singleton ms_Singleton;
 
     public:
-        Singleton() { cout << __FUNCTION__ << endl; }
+        Singleton()
+        {
+            cout << __FUNCTION__ << endl;
+            // 2. 생성자에서 Get() 함수를 호출한다.
+            Get();
+        }
 
         static T& Get()
         {
-            /* Derived instance 는 처음 이 문장을 만났을 때 초기화된다.
-             *
-             * TWrapper<Derived>::TWrapper() 생성자
-             * Derived::Derived() 생성자 */
+            // 3. Get() 내에서 Derived instance 객체를 초기화해야 한다.
             static T instance;
 
             cout << "static Derived instance 직후" << endl;
 
+            /* 4. 하지만, 여전히 ms_Singleton 없이도 Get() 을 호출하는데 문제가 없기 때문에
+             * ms_Singleton 은 생성되지 않는다. */
+            
             return instance;
         }
     };
 };
-/* 이때도 Singleton::Get() 함수가 사용될 뿐,
- * 템플릿의 특성 때문에 Singleton::ms_Singleton 은 생성되지 않는다. */
+
 template <typename T>
 typename TWrapper<T>::Singleton TWrapper<T>::Singleton::ms_Singleton;
 
@@ -49,16 +53,13 @@ public:
     void Print() { cout << "Derived::Print() 호출" << endl; }
 };
 
+#define _Derived Derived::GetInstance()
+
 int main(int argc, char* argv[])
 {
     cout << "main 시작" << endl;
 
-    /* Derived 객체는 Derived:: 때문에 생기는 것이 아니라,
-     *
-     * TWrapper<Derived>::Singleton::Get() 함수 내의
-     *
-     * static Derived instance 때문에 생기는 것이다. */
-    Derived::GetInstance().Print();
+    _Derived.Print();
 
     return 0;
 }

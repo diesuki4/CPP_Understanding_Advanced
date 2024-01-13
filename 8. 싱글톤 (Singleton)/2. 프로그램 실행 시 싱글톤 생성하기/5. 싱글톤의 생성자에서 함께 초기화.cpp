@@ -3,7 +3,7 @@
 using namespace std;
 
 /*
- * 싱글톤 3
+ * 싱글톤의 생성자에서 함께 초기화
  */
 
 template <typename T>
@@ -16,27 +16,26 @@ public:
 
     class Singleton
     {
-        // 1. 컴파일러는 ms_Singleton 을 초기화해야 하는지 확인하기 위해 생성자를 본다.
         static Singleton ms_Singleton;
 
     public:
         Singleton()
         {
             cout << __FUNCTION__ << endl;
-            // 2. 생성자에서 Get() 함수를 호출한다.
+            /* main 이전에 ms_Singleton 이 초기화될 때, 강제로 Get() 을 호출해주면
+             * 
+             * static Derived instance 도 그때 초기화되도록 할 수 있다.*/
             Get();
         }
 
         static T& Get()
         {
-            // 3. Get() 내에서 Derived instance 객체를 초기화해야 한다.
             static T instance;
 
             cout << "static Derived instance 직후" << endl;
-
-            /* 4. 하지만, 여전히 ms_Singleton 없이도 Get() 을 호출하는데 문제가 없기 때문에
-             * ms_Singleton 은 생성되지 않는다. */
             
+            ms_Singleton;
+
             return instance;
         }
     };
@@ -53,11 +52,13 @@ public:
     void Print() { cout << "Derived::Print() 호출" << endl; }
 };
 
+#define _Derived Derived::GetInstance()
+
 int main(int argc, char* argv[])
 {
     cout << "main 시작" << endl;
 
-    Derived::GetInstance().Print();
+    _Derived.Print();
 
     return 0;
 }

@@ -3,7 +3,7 @@
 using namespace std;
 
 /*
- * 싱글톤 1
+ * 싱글톤 템플릿 클래스의 문제점
  */
 
 class Singleton
